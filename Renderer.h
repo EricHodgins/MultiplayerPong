@@ -10,6 +10,8 @@ class Renderer {
         Renderer(int screenWidth, int screenHeight);
         ~Renderer();
         SDL_Renderer* getRenderer() { return renderer; }
+        int getScreenWidth() { return mScreenWidth; }
+        int getScreenHeight() { return mScreenHeight; }
 
     private:
         int mScreenWidth;
