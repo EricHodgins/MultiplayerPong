@@ -9,15 +9,15 @@ class Ball {
 public:
     static const int BALL_WIDTH = 20;
     static const int BALL_HEIGHT = 20;
-    static const int DOT_VEL = 10;
+    static constexpr float BALL_VEL = 100.0f;
 
     Ball(Renderer &renderer, LTexture &ballTexture);
-    void move(SDL_Rect &wall);
+    void move(SDL_Rect &wall, Uint32 deltaTime);
     void render();
 
 private:
-    int mPosX, mPosY;
-    int mVelX, mVelY;
+    float mPosX, mPosY;
+    float mVelX, mVelY;
     SDL_Rect mCollider;
     Renderer &mRenderer;
     LTexture mBallTexture;

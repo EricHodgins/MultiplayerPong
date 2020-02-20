@@ -7,34 +7,42 @@ Ball::Ball(Renderer &renderer, LTexture &ballTexture) : mRenderer(renderer), mBa
     mCollider.w = BALL_WIDTH;
     mCollider.h = BALL_HEIGHT;
 
-    mVelX = 0;
-    mVelY = 0;
+    mVelX = BALL_VEL;
+    mVelY = BALL_VEL;
 }
 
-void Ball::move(SDL_Rect &wall) {
+void Ball::move(SDL_Rect &wall, Uint32 deltaTime) {
     //Move the dot left or right
-    mPosX += mVelX;
+    mPosX += mVelX * ((float)deltaTime / 1000.0);
 	mCollider.x = mPosX;
+
+    std::cout << "DeltaTime: " << deltaTime << " , mPosX: " << mPosX << std::endl;
 
     //If the dot collided or went too far to the left or right
     if( ( mPosX < 0 ) || ( mPosX + BALL_WIDTH > mRenderer.getScreenWidth()) || checkCollision( mCollider, wall ) )
     {
         //Move back
-        mPosX -= mVelX;
-		mCollider.x = mPosX;
+        //mPosX = -mPosX;
+		//mCollider.x = mPosX;
+        mVelX = -mVelX;
     }
 
     //Move the dot up or down
-    mPosY += mVelY;
+    mPosY += mVelY * ((float)deltaTime / 1000.0);
 	mCollider.y = mPosY;
 
     //If the dot collided or went too far up or down
     if( ( mPosY < 0 ) || ( mPosY + BALL_HEIGHT > mRenderer.getScreenHeight()) || checkCollision( mCollider, wall ) )
     {
         //Move back
-        mPosY -= mVelY;
-		mCollider.y = mPosY;
+        //mPosY = -mPosY;
+		//mCollider.y = mPosY;
+        mVelY = -mVelY;
     }
+}
+
+void Ball::render() {
+    mBallTexture.render(mPosX, mPosY);
 }
 
 bool Ball::checkCollision( SDL_Rect a, SDL_Rect b )
