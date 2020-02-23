@@ -21,6 +21,7 @@ UDPSocket::UDPSocket(const std::string address, const std::string port) {
 }
 
 UDPSocket::~UDPSocket() {
+    freeaddrinfo(bind_address);
     CLOSESOCKET(mSocket);
 }
 
@@ -30,11 +31,9 @@ void UDPSocket::Bind() {
     if (bind(mSocket, bind_address->ai_addr, bind_address->ai_addrlen)) {
         std::cerr << "bind() failed. (" << GETSOCKETERRNO() << ")" << std::endl;
     }
-
-    freeaddrinfo(bind_address);
 }
 
-void UDPSocket::Receive() {
+void UDPSocket::Receive(char q[1]) {
     std::cout << "Receiving. Socket ready to be read." << std::endl;
 
     struct sockaddr_storage client_address;
@@ -43,15 +42,22 @@ void UDPSocket::Receive() {
     char read[128];
     int bytes_received = recvfrom(mSocket, read, 128, 0,
                                  (struct sockaddr*)&client_address, &client_len);
-
     if (bytes_received < 1) {
         std::cout << "connection closed. " << GETSOCKETERRNO() << std::endl;
     }
 
     std::cout << "received data: ";
-    for (int i = 0; i < bytes_received; i++) {
+    for (int i = 0; i < bytes_received; i++) {        
         std::cout << read[i] << " ";
     }
 
+    if (read[0] == 'Q') {
+        q[0] = 'Q';
+    }
+
     std::cout << std::endl;
+}
+
+struct addrinfo* UDPSocket::GetAddressInfo() {
+    return bind_address;
 }

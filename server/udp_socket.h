@@ -11,8 +11,9 @@ class UDPSocket {
         UDPSocket(const std::string address, const std::string port);
         ~UDPSocket();
         void Bind();
-        void Receive();
+        void Receive(char *q);
         SOCKET GetSocketHandle() { return mSocket; }
+        struct addrinfo* GetAddressInfo();
 
     private:
         struct addrinfo *bind_address;
