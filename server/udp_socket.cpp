@@ -12,7 +12,7 @@ UDPSocket::UDPSocket(const std::string address, const std::string port) {
 
     getaddrinfo(address.c_str(), port.c_str(), &hints, &bind_address);
 
-    std::cout << "Creating UPD socket..." << std::endl;
+    std::cout << "Creating UDP socket..." << std::endl;
     mSocket = socket(bind_address->ai_family, bind_address->ai_socktype, bind_address->ai_protocol);
     
     if (!ISVALIDSOCKET(mSocket)) {

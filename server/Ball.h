@@ -14,6 +14,7 @@ public:
     Ball(Renderer &renderer, LTexture &ballTexture);
     void move(SDL_Rect &wall, Uint32 deltaTime);
     void render();
+    void sendStateToClients();
 
 private:
     float mPosX, mPosY;
