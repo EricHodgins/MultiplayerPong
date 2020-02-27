@@ -33,7 +33,7 @@ void tmpSelect(std::shared_ptr<UDPSocket> udp_socket) {
     }
 }
 
-void Game::Update(Renderer &renderer) {
+void Game::Update(Renderer &renderer, UDPServer &server) {
     std::size_t target_frame_duration = 60;
     Uint32 frame_start = 0;
     Uint32 frame_end = 0;
@@ -50,7 +50,7 @@ void Game::Update(Renderer &renderer) {
     LTexture ballTexture(renderer);
     ballTexture.loadFromFile("../shared/dot.bmp");
 
-    Ball ball(renderer, ballTexture);
+    Ball ball(renderer, ballTexture, server);
 
     SDL_Rect paddle;
     paddle.x = 30;
@@ -58,8 +58,8 @@ void Game::Update(Renderer &renderer) {
     paddle.w = 15;
     paddle.h = 120;
     
-    std::shared_ptr<UDPSocket> udp_socket(new UDPSocket("0", "8080"));
-    std::thread t1(tmpSelect, udp_socket);
+    //std::shared_ptr<UDPSocket> udp_socket(new UDPSocket("0", "8080"));
+    //std::thread t1(tmpSelect, udp_socket);
 
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
@@ -67,8 +67,8 @@ void Game::Update(Renderer &renderer) {
                 quit = true;
                 char read[1];
                 read[0] = 'Q';
-                sendto(udp_socket->GetSocketHandle(), read, strlen(read), 0,
-                       udp_socket->GetAddressInfo()->ai_addr, udp_socket->GetAddressInfo()->ai_addrlen);
+                //sendto(udp_socket->GetSocketHandle(), read, strlen(read), 0,
+                //       udp_socket->GetAddressInfo()->ai_addr, udp_socket->GetAddressInfo()->ai_addrlen);
             }
         }
         
@@ -79,6 +79,7 @@ void Game::Update(Renderer &renderer) {
             // Move Ball and check collision
             ball.move(paddle, deltaTime);
             last_update_time = current_time;
+            ball.sendStateToClients();
         }
  
         // Clear Screen
@@ -108,5 +109,5 @@ void Game::Update(Renderer &renderer) {
         current_time = SDL_GetTicks();
     }
     
-    t1.join();
+    //t1.join();
 }

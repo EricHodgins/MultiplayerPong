@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include "LTexture.h"
 #include "Renderer.h"
+#include "udp_server.h"
 
 class Ball {
 public:
@@ -11,7 +12,7 @@ public:
     static const int BALL_HEIGHT = 20;
     static constexpr float BALL_VEL = 100.0f;
 
-    Ball(Renderer &renderer, LTexture &ballTexture);
+    Ball(Renderer &renderer, LTexture &ballTexture, UDPServer &server);
     void move(SDL_Rect &wall, Uint32 deltaTime);
     void render();
     void sendStateToClients();
@@ -22,6 +23,7 @@ private:
     SDL_Rect mCollider;
     Renderer &mRenderer;
     LTexture mBallTexture;
+    UDPServer &mServer;
 
     bool checkCollision(SDL_Rect a, SDL_Rect b);
 };

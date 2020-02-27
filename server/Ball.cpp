@@ -1,6 +1,9 @@
 #include "Ball.h"
 
-Ball::Ball(Renderer &renderer, LTexture &ballTexture) : mRenderer(renderer), mBallTexture(ballTexture) {
+Ball::Ball(Renderer &renderer, LTexture &ballTexture, 
+           UDPServer &server) : mRenderer(renderer), 
+                                mBallTexture(ballTexture),
+                                mServer(server) {
     mPosX = 0;
     mPosY = 0;
 
@@ -82,3 +85,12 @@ bool Ball::checkCollision( SDL_Rect a, SDL_Rect b )
     return true;
 }
 
+void Ball::sendStateToClients() {
+    std::cout << "Sending Ball position..." << std::endl;
+
+    std::string x = std::to_string(mPosX); 
+    sendto(mServer.GetSocket()->GetSocketHandle(), x.c_str(), strlen(x.c_str()), 0,
+           (struct sockaddr*)&mServer.getPlayer1()->address,
+           sizeof(mServer.getPlayer1()->address));
+
+}
