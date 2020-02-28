@@ -5,34 +5,6 @@
 #include "Ball.h"
 #include "udp_socket.h"
 
-void tmpSelect(std::shared_ptr<UDPSocket> udp_socket) {
-    std::cout << "Entering Network Thread..." << std::endl;
-
-    udp_socket->Bind();
-
-    fd_set master;
-    FD_ZERO(&master);
-    FD_SET(udp_socket->GetSocketHandle(), &master);
-    SOCKET max_socket = udp_socket->GetSocketHandle();
-
-    while (true) {
-        fd_set reads;
-        reads = master;
-        // select is non-blocking but waits until a socket is ready.
-        if (select(max_socket+1, &reads, 0, 0, 0) < 0) {
-            std::cerr << "select() failed. " << GETSOCKETERRNO() << std::endl;
-        }
-
-        if (FD_ISSET(udp_socket->GetSocketHandle(), &reads)) {
-            char q[1] = {'\0'};
-            udp_socket->Receive(q);
-            if (q[0] == 'Q') {
-                break;
-            }
-        }
-    }
-}
-
 void Game::Update(Renderer &renderer, UDPServer &server) {
     std::size_t target_frame_duration = 60;
     Uint32 frame_start = 0;
@@ -57,9 +29,6 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
     paddle.y = 100;
     paddle.w = 15;
     paddle.h = 120;
-    
-    //std::shared_ptr<UDPSocket> udp_socket(new UDPSocket("0", "8080"));
-    //std::thread t1(tmpSelect, udp_socket);
 
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
