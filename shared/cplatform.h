@@ -1,3 +1,5 @@
+#ifndef CPLATFORM_H
+#define CPLATFORM_H
 /*time_server.c*/
 
 #if defined(_WIN32)
@@ -42,4 +44,6 @@
 #define GETSOCKETERRNO() (WSAGetLastError())
 #else
 #define GETSOCKETERRNO() (errno)
+#endif
+
 #endif

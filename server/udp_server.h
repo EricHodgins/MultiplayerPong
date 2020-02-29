@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
-#include "cplatform.h"
+#include "../shared/cplatform.h"
 #include "udp_socket.h"
 
 struct Player {
