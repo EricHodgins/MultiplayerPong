@@ -18,7 +18,7 @@ class UDPServer {
         ~UDPServer();
         std::shared_ptr<UDPSocket> GetSocket() { return udp_socket; }
         void WaitForPlayerConnections();
-        void HandleGameNetwork();
+        void GetClientPaddleUpdates();
         Player* getPlayer1() { return player1; }
         Player* getPlayer2() { return player2; }
 

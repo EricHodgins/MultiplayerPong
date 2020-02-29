@@ -43,7 +43,7 @@ void UDPServer::WaitForPlayerConnections() {
                 std::cout << "Player RDY" << std::endl;
                 
                 
-                // Maybe a data race here...
+                // Maybe a data race here potentially...
                 if (player1 == nullptr) {
                     player1 = new Player{playerAddress, "P1"};
                 } else {
@@ -59,7 +59,7 @@ void UDPServer::WaitForPlayerConnections() {
 
 }
 
-void UDPServer::HandleGameNetwork() {
+void UDPServer::GetClientPaddleUpdates() {
     fd_set master;
     FD_ZERO(&master);
     FD_SET(udp_socket->GetSocketHandle(), &master);
@@ -71,13 +71,9 @@ void UDPServer::HandleGameNetwork() {
         if (select(max_socket+1, &reads, 0, 0, 0) < 0) {
             std::cerr << "select() failed. " << GETSOCKETERRNO() << std::endl;
         }
-
+        // Paddle Update from a Client
         if (FD_ISSET(udp_socket->GetSocketHandle(), &reads)) {
-            char q[1] = {'\0'};
-            udp_socket->Receive(q);
-            if (q[0] == 'Q') {
-                break;
-            }
+            udp_socket->Receive();
         }
     }
 

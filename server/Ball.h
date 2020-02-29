@@ -2,8 +2,8 @@
 #define BALL_H
 
 #include <SDL2/SDL.h>
-#include "LTexture.h"
-#include "Renderer.h"
+#include "../shared/LTexture.h"
+#include "../shared/Renderer.h"
 #include "udp_server.h"
 
 class Ball {

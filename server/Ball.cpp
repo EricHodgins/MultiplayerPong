@@ -86,7 +86,7 @@ bool Ball::checkCollision( SDL_Rect a, SDL_Rect b )
 }
 
 void Ball::sendStateToClients() {
-    std::cout << "Sending Ball position..." << std::endl;
+    //std::cout << "Sending Ball position..." << std::endl;
 
     std::string x = std::to_string(mPosX); 
     sendto(mServer.GetSocket()->GetSocketHandle(), x.c_str(), strlen(x.c_str()), 0,

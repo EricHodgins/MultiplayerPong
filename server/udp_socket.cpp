@@ -33,7 +33,7 @@ void UDPSocket::Bind() {
     }
 }
 
-void UDPSocket::Receive(char q[1]) {
+void UDPSocket::Receive() {
     std::cout << "Receiving. Socket ready to be read." << std::endl;
 
     struct sockaddr_storage client_address;
@@ -49,10 +49,6 @@ void UDPSocket::Receive(char q[1]) {
     std::cout << "received data: ";
     for (int i = 0; i < bytes_received; i++) {        
         std::cout << read[i] << " ";
-    }
-
-    if (read[0] == 'Q') {
-        q[0] = 'Q';
     }
 
     std::cout << std::endl;

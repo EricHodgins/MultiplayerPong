@@ -2,7 +2,7 @@
 #define GAME_H
 
 #include <SDL2/SDL.h>
-#include "Renderer.h"
+#include "../shared/Renderer.h"
 #include "udp_server.h"
 
 class Game {

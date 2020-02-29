@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "LTexture.h"
+#include "../shared/LTexture.h"
 #include "Ball.h"
 
 void Game::Update(Renderer &renderer) {
@@ -18,7 +18,7 @@ void Game::Update(Renderer &renderer) {
     SDL_Event e;
         
     LTexture ballTexture(renderer);
-    ballTexture.loadFromFile("dot.bmp");
+    ballTexture.loadFromFile("../shared/dot.bmp");
 
     Ball ball(renderer, ballTexture);
 

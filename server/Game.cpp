@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 #include "Game.h"
-#include "LTexture.h"
+#include "../shared/LTexture.h"
 #include "Ball.h"
 #include "udp_socket.h"
 
