@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "../shared/LTexture.h"
 #include "Ball.h"
-#include "udp_socket.h"
+#include "../shared/udp_socket.h"
 
 void Game::Update(Renderer &renderer, UDPServer &server) {
     std::size_t target_frame_duration = 60;
