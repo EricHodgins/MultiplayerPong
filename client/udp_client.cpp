@@ -1,25 +1,32 @@
 #include "udp_client.h"
 
-void UDPClient::ConnectToServer() {
-    std::cout << "Connecting to server..." << std::endl;
-    struct addrinfo hints;
-    memset(&hints, 0, sizeof(hints));
-    hints.ai_socktype = SOCK_DGRAM;
-    struct addrinfo *peer_address;
+UDPClient::UDPClient(std::shared_ptr<UDPSocket> socket) : udp_socket(socket) {}
 
-    if (getaddrinfo("127.0.0.1", "8080", &hints, &peer_address)) {
-        std::cerr << "getaddrinfo() failed. " << GETSOCKETERRNO() << std::endl;
+void UDPClient::SendRDYToServer() {
+    char read[4] = {'R', 'D', 'Y', '\0'};
+    int bytes_sent = sendto(udp_socket->GetSocketHandle(), read, strlen(read),0,
+                            udp_socket->GetAddressInfo()->ai_addr, 
+                            udp_socket->GetAddressInfo()->ai_addrlen);
+
+    std::cout << "RDY sent: " << bytes_sent << " bytes" << std::endl;
+}
+
+void UDPClient::GetBallUpdates() {
+    fd_set master;
+    FD_ZERO(&master);
+    FD_SET(udp_socket->GetSocketHandle(), &master);
+    SOCKET max_socket = udp_socket->GetSocketHandle();
+
+    while (true) {
+        fd_set reads;
+        reads = master;
+        if (select(max_socket+1, &reads, 0, 0, 0) < 0) {
+            std::cerr << "select() failed. " << GETSOCKETERRNO() << std::endl;
+        }
+        // Ball Update from server
+        if (FD_ISSET(udp_socket->GetSocketHandle(), &reads)) {
+            udp_socket->Receive();
+        }
     }
-
-    char address_buffer[100];
-    char service_buffer[100];
-    getnameinfo(peer_address->ai_addr, peer_address->ai_addrlen,
-                address_buffer, sizeof(address_buffer),
-                service_buffer, sizeof(service_buffer),
-                NI_NUMERICHOST | NI_NUMERICSERV);
-
-    std::cout << "Server address is: " << std::string(address_buffer) << ":" << std::string(service_buffer)
-    << std::endl;
-
 
 }

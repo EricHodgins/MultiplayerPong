@@ -16,14 +16,9 @@ void Ball::move(SDL_Rect &wall, Uint32 deltaTime) {
     mPosX += mVelX * ((float)deltaTime / 1000.0);
 	mCollider.x = mPosX;
 
-    std::cout << "DeltaTime: " << deltaTime << " , mPosX: " << mPosX << std::endl;
-
     //If the dot collided or went too far to the left or right
     if( ( mPosX < 0 ) || ( mPosX + BALL_WIDTH > mRenderer.getScreenWidth()) || checkCollision( mCollider, wall ) )
     {
-        //Move back
-        //mPosX = -mPosX;
-		//mCollider.x = mPosX;
         mVelX = -mVelX;
     }
 
@@ -34,9 +29,6 @@ void Ball::move(SDL_Rect &wall, Uint32 deltaTime) {
     //If the dot collided or went too far up or down
     if( ( mPosY < 0 ) || ( mPosY + BALL_HEIGHT > mRenderer.getScreenHeight()) || checkCollision( mCollider, wall ) )
     {
-        //Move back
-        //mPosY = -mPosY;
-		//mCollider.y = mPosY;
         mVelY = -mVelY;
     }
 }
@@ -89,4 +81,3 @@ bool Ball::checkCollision( SDL_Rect a, SDL_Rect b )
     //If none of the sides from A are outside B
     return true;
 }
-

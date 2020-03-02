@@ -1,8 +1,6 @@
 #include "Game.h"
-#include "../shared/LTexture.h"
-#include "Ball.h"
 
-void Game::Update(Renderer &renderer) {
+void Game::Update(Renderer &renderer, UDPClient &udp_client) {
     std::size_t target_frame_duration = 60;
     Uint32 title_timestamp = SDL_GetTicks();
     Uint32 frame_start = 0;
