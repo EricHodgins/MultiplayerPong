@@ -5,7 +5,7 @@
 #include <string>
 #include <thread>
 #include "../shared/cplatform.h"
-#include "../shared/udp_socket.h"
+#include "udp_socket.h"
 
 struct Player {
     struct sockaddr_storage address;

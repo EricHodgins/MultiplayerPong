@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "../shared/LTexture.h"
 #include "Ball.h"
-#include "../shared/udp_socket.h"
+#include "udp_socket.h"
 
 void Game::Update(Renderer &renderer, UDPServer &server) {
     std::size_t target_frame_duration = 60;
@@ -34,10 +34,6 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
-                char read[1];
-                read[0] = 'Q';
-                //sendto(udp_socket->GetSocketHandle(), read, strlen(read), 0,
-                //       udp_socket->GetAddressInfo()->ai_addr, udp_socket->GetAddressInfo()->ai_addrlen);
             }
         }
         
