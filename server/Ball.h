@@ -11,7 +11,7 @@ public:
     static const int BALL_WIDTH = 20;
     static const int BALL_HEIGHT = 20;
     static constexpr float BALL_VEL = 100.0f;
-
+    
     Ball(Renderer &renderer, LTexture &ballTexture, UDPServer &server);
     void move(SDL_Rect &wall, Uint32 deltaTime);
     void render();

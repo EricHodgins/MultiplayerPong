@@ -21,7 +21,8 @@ class UDPServer {
         void GetClientPaddleUpdates();
         Player* getPlayer1() { return player1; }
         Player* getPlayer2() { return player2; }
-
+        
+        void TmpTest();
     private:
         std::shared_ptr<UDPSocket> udp_socket;
         Player *player1, *player2;        

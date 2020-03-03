@@ -1,4 +1,5 @@
 #include "udp_server.h"
+#include <unistd.h>
 
 UDPServer::UDPServer(std::shared_ptr<UDPSocket> &socket) : player1(nullptr), player2(nullptr) {
     udp_socket = socket;
@@ -45,7 +46,12 @@ void UDPServer::WaitForPlayerConnections() {
                 
                 // Maybe a data race here potentially...
                 if (player1 == nullptr) {
+                    char conn1[7] = {'P','1','C','O','N','N', '\0'};
                     player1 = new Player{playerAddress, "P1"};
+                    usleep(3000000);
+                    sendto(udp_socket->GetSocketHandle(), conn1, strlen(conn1),0, 
+                          (struct sockaddr*)&player1->address, sizeof(player1->address));
+                    usleep(1000000);
                 } else {
                     player2 = new Player{playerAddress, "P2"};
                     break;
@@ -57,6 +63,20 @@ void UDPServer::WaitForPlayerConnections() {
 
     std::cout << "Players Connected (2). " << std::endl;        
 
+}
+
+void UDPServer::TmpTest() {
+    std::string x = std::to_string(1234.56); 
+    int bytes_sent1 = sendto(GetSocket()->GetSocketHandle(), x.c_str(), strlen(x.c_str()), 0,
+           (struct sockaddr*)&getPlayer1()->address,
+           sizeof(getPlayer1()->address));
+
+    int bytes_sent2 = sendto(GetSocket()->GetSocketHandle(), x.c_str(), strlen(x.c_str()), 0,
+           (struct sockaddr*)&getPlayer2()->address,
+           sizeof(getPlayer1()->address));
+
+    std::cout << "Bytes to Player 1: " << bytes_sent1 << std::endl;
+    std::cout << "Bytes to Player 2: " << bytes_sent2 << std::endl;
 }
 
 void UDPServer::GetClientPaddleUpdates() {
@@ -76,5 +96,4 @@ void UDPServer::GetClientPaddleUpdates() {
             udp_socket->Receive();
         }
     }
-
 }
