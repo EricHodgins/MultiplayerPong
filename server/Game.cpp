@@ -54,7 +54,7 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
         // Render Ball
         ball.render();
 
-        // Render Paddl 1
+        // Render Paddle 1
         SDL_SetRenderDrawColor(renderer.getRenderer(), 0x00, 0x00, 0x00, 0xFF);
         SDL_RenderFillRect(renderer.getRenderer(), &paddle);
 

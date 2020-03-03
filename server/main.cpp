@@ -16,11 +16,9 @@ int main(int argc, char *argv[]) {
 
     Renderer renderer = Renderer(640, 480);
 
-    udp_server.TmpTest();
     LTexture ballTexture(renderer);
     ballTexture.loadFromFile("../shared/dot.bmp");
     Ball ball(renderer, ballTexture, udp_server);
-    ball.sendStateToClients();
 
     std::future<void> fut = std::async(std::launch::async, &UDPServer::GetClientPaddleUpdates, &udp_server);
 
