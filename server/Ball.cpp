@@ -85,16 +85,31 @@ bool Ball::checkCollision( SDL_Rect a, SDL_Rect b )
     return true;
 }
 
+char* Ball::SerializeOut() {
+    char flag = 'B';
+    char *buffer = 0;
+    buffer = static_cast<char*>(std::realloc(buffer, sizeof(float)*4 + sizeof(char)));
+    memcpy(buffer, &flag, sizeof(char));
+    memcpy(buffer + sizeof(char), &mPosX, sizeof(float));
+    memcpy(buffer + sizeof(char) + sizeof(float), &mPosY, sizeof(float));
+    memcpy(buffer + sizeof(char) + sizeof(float)*2, &mVelX, sizeof(float));
+    memcpy(buffer + sizeof(char) + sizeof(float)*3, &mVelY, sizeof(float));
+
+    return buffer;
+}
+
 void Ball::sendStateToClients() {
 
     std::cout << mServer.GetSocket()->GetSocketHandle() << std::endl;
 
     std::string x = std::to_string(mPosX); 
-    int bytes_sent1 = sendto(mServer.GetSocket()->GetSocketHandle(), x.c_str(), strlen(x.c_str()), 0,
+    char *ballData = SerializeOut();
+    int dataSize = sizeof(char) + sizeof(float)*4;
+    int bytes_sent1 = sendto(mServer.GetSocket()->GetSocketHandle(), ballData, dataSize, 0,
            (struct sockaddr*)&mServer.getPlayer1()->address,
            sizeof(mServer.getPlayer1()->address));
 
-    int bytes_sent2 = sendto(mServer.GetSocket()->GetSocketHandle(), x.c_str(), strlen(x.c_str()), 0,
+    int bytes_sent2 = sendto(mServer.GetSocket()->GetSocketHandle(), ballData, dataSize, 0,
            (struct sockaddr*)&mServer.getPlayer2()->address,
            sizeof(mServer.getPlayer2()->address));
 

@@ -12,6 +12,7 @@ class Renderer {
         SDL_Renderer* getRenderer() { return renderer; }
         int getScreenWidth() { return mScreenWidth; }
         int getScreenHeight() { return mScreenHeight; }
+        void setWindowTitle(std::string newTitle);
 
     private:
         int mScreenWidth;

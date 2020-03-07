@@ -19,6 +19,7 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client) {
     ballTexture.loadFromFile("../shared/dot.bmp");
 
     Ball ball(renderer, ballTexture);
+    udp_client.SetBall(&ball);
 
     SDL_Rect paddle;
     paddle.x = 30;

@@ -1,6 +1,6 @@
 #include "udp_client.h"
 
-UDPClient::UDPClient(std::shared_ptr<UDPSocket> socket) : udp_socket(socket) {}
+UDPClient::UDPClient(std::shared_ptr<UDPSocket> socket) : udp_socket(socket), mBall(NULL) {}
 
 void UDPClient::SendRDYToServer() {
     char read[4] = {'R', 'D', 'Y', '\0'};
@@ -11,11 +11,28 @@ void UDPClient::SendRDYToServer() {
     std::cout << "RDY sent: " << bytes_sent << " bytes" << std::endl;
 }
 
-void UDPClient::GetBallUpdates() {
+void UDPClient::SetBall(Ball *ball) {
+    mBall = ball;    
+}
+
+void UDPClient::UpdateBall(char *ballData) {
+    float posX = *(float*)(ballData + sizeof(char));
+    float posY = *(float*)(ballData + sizeof(char) + sizeof(float));
+    float velX = *(float*)(ballData + sizeof(char) + sizeof(float)*2);
+    float velY = *(float*)(ballData + sizeof(char) + sizeof(float)*3);
+    
+    std::cout << "posX: " << posX << ", " << posY << ", " << velX << ", " << velY << std::endl;
+    mBall->Update(posX, posY, velX, velY);
+}
+
+void UDPClient::GetUpdates() {
     fd_set master;
     FD_ZERO(&master);
     FD_SET(udp_socket->GetSocketHandle(), &master);
     SOCKET max_socket = udp_socket->GetSocketHandle();
+
+    int maxPacketSize = sizeof(char) + sizeof(float)*4;
+    char readIn[maxPacketSize]; // Max Size of packet coming in
 
     while (true) {
         fd_set reads;
@@ -25,7 +42,15 @@ void UDPClient::GetBallUpdates() {
         }
         // Ball Update from server
         if (FD_ISSET(udp_socket->GetSocketHandle(), &reads)) {
-            udp_socket->Receive();
+            recv(udp_socket->GetSocketHandle(), readIn, maxPacketSize, 0);
+            char object_flag = readIn[0];
+            if (object_flag == 'B') {
+                UpdateBall(readIn);                 
+            } else if (object_flag == 'P') {
+                std::cout << "Paddle data received" << std::endl;
+            }
+            
+            //udp_socket->Receive();
         }
     }
 

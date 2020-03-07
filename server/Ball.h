@@ -16,6 +16,7 @@ public:
     void move(SDL_Rect &wall, Uint32 deltaTime);
     void render();
     void sendStateToClients();
+    char* SerializeOut();
 
 private:
     float mPosX, mPosY;

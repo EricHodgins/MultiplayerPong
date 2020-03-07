@@ -13,7 +13,7 @@ Renderer::Renderer(int screenWidth, int screenHeight) {
     if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
         std::cout << "Warning: Linear texture filtering not enabled." << std::endl;
     }
-    
+   
     // Create Window
     window = SDL_CreateWindow("Multiplayer Pong", SDL_WINDOWPOS_UNDEFINED,
                                SDL_WINDOWPOS_UNDEFINED, mScreenWidth,
@@ -37,6 +37,11 @@ Renderer::Renderer(int screenWidth, int screenHeight) {
     if (!(IMG_Init(imgFlags) & imgFlags)) {
         std::cerr << "SDL_image could not be initialized. " << IMG_GetError() << std::endl;
     }    
+}
+
+void Renderer::setWindowTitle(std::string newTitle) {
+    const char *title = newTitle.c_str();
+    SDL_SetWindowTitle(window, title);
 }
 
 Renderer::~Renderer() {

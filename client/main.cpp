@@ -9,9 +9,10 @@ int main(int argc, char *argv[]) {
     UDPClient udp_client(socket);
     udp_client.SendRDYToServer();
 
-    std::thread network_thread = std::thread(&UDPClient::GetBallUpdates, udp_client);
+    std::thread network_thread = std::thread(&UDPClient::GetUpdates, &udp_client);
 
     Renderer renderer = Renderer(640, 480);
+    renderer.setWindowTitle("Multiplayer Pong (CLIENT)");
     Game game;
     game.Update(renderer, udp_client);
 

@@ -54,7 +54,7 @@ void UDPServer::WaitForPlayerConnections() {
                     char conn2[7] = {'P','2','C','O','N','N', '\0'};
                     player2 = new Player{playerAddress, "P2"};
                     sendto(udp_socket->GetSocketHandle(), conn2, strlen(conn2),0, 
-                          (struct sockaddr*)&player1->address, sizeof(player1->address));
+                          (struct sockaddr*)&player2->address, sizeof(player2->address));
                     usleep(3000000);
                     break;
                 }

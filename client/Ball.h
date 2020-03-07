@@ -15,6 +15,7 @@ public:
     Ball(Renderer &renderer, LTexture &ballTexture);
     void move(SDL_Rect &wall, Uint32 deltaTime);
     void render();
+    void Update(float posX, float posY, float velX, float velY);
 
 private:
     float mPosX, mPosY;

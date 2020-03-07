@@ -33,6 +33,13 @@ void Ball::move(SDL_Rect &wall, Uint32 deltaTime) {
     }
 }
 
+void Ball::Update(float posX, float posY, float velX, float velY) {
+    mPosX = posX;
+    mPosY = posY;
+    mVelX = velX;
+    mVelY = velY;
+}
+
 void Ball::render() {
     mBallTexture.render(mPosX, mPosY);
 }

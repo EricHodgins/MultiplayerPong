@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Simulating Game..." << std::endl;
 
     Renderer renderer = Renderer(640, 480);
+    renderer.setWindowTitle("Multiplayer Pong (SERVER)");
 
     LTexture ballTexture(renderer);
     ballTexture.loadFromFile("../shared/dot.bmp");
