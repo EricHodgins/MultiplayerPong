@@ -1,6 +1,7 @@
 #include "Game.h"
+#include "controller.h"
 
-void Game::Update(Renderer &renderer, UDPClient &udp_client) {
+void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string playerName) {
     std::size_t target_frame_duration = 60;
     Uint32 title_timestamp = SDL_GetTicks();
     Uint32 frame_start = 0;
@@ -13,33 +14,24 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client) {
     Uint32 deltaTime = current_time - last_update_time;
 
     bool quit = false;
-    SDL_Event e;
         
     LTexture ballTexture(renderer);
     ballTexture.loadFromFile("../shared/dot.bmp");
 
     Ball ball(renderer, ballTexture);
     udp_client.SetBall(&ball);
-
-    SDL_Rect paddle;
-    paddle.x = 30;
-    paddle.y = 100;
-    paddle.w = 30;
-    paddle.h = 125;
-
+    
+    Paddle paddle(renderer, playerName, udp_client);
+    Controller controller;
     while (!quit) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-            }
-        }
+        controller.HandleInput(quit, paddle);
 
         frame_start = SDL_GetTicks();
         deltaTime = current_time - last_update_time;
 
         if (deltaTime >= 1) {
             // Move Ball and check collision
-            ball.move(paddle, deltaTime);
+            ball.move(paddle.GetBody(), deltaTime);
             last_update_time = current_time;
         }
  
@@ -50,9 +42,8 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client) {
         // Render Ball
         ball.render();
 
-        // Render Paddl 1
-        SDL_SetRenderDrawColor(renderer.getRenderer(), 0x00, 0x00, 0x00, 0xFF);
-        SDL_RenderFillRect(renderer.getRenderer(), &paddle);
+        // Render Paddles 
+        paddle.Render();
 
         // Update Screen
         SDL_RenderPresent(renderer.getRenderer());

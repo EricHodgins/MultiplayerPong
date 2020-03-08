@@ -21,8 +21,34 @@ void UDPClient::UpdateBall(char *ballData) {
     float velX = *(float*)(ballData + sizeof(char) + sizeof(float)*2);
     float velY = *(float*)(ballData + sizeof(char) + sizeof(float)*3);
     
-    std::cout << "posX: " << posX << ", " << posY << ", " << velX << ", " << velY << std::endl;
+    //std::cout << "posX: " << posX << ", " << posY << ", " << velX << ", " << velY << std::endl;
     mBall->Update(posX, posY, velX, velY);
+}
+
+std::string UDPClient::GetRDYResponse() {
+    fd_set master;
+    FD_ZERO(&master);
+    FD_SET(udp_socket->GetSocketHandle(), &master);
+    SOCKET max_socket = udp_socket->GetSocketHandle();
+
+    int maxPacketSize = sizeof(char)*2; 
+    char readIn[maxPacketSize]; // Max Size of packet coming in
+    std::string player = "";
+    while (true) {
+        fd_set reads;
+        reads = master;
+        if (select(max_socket+1, &reads, 0, 0, 0) < 0) {
+            std::cerr << "select() failed. " << GETSOCKETERRNO() << std::endl;
+        }
+    
+        if (FD_ISSET(udp_socket->GetSocketHandle(), &reads)) {
+            recv(udp_socket->GetSocketHandle(), readIn, maxPacketSize, 0);
+            player = std::string(readIn, 2);
+            break;
+        }
+    }
+
+    return player;
 }
 
 void UDPClient::GetUpdates() {
@@ -49,9 +75,6 @@ void UDPClient::GetUpdates() {
             } else if (object_flag == 'P') {
                 std::cout << "Paddle data received" << std::endl;
             }
-            
-            //udp_socket->Receive();
         }
     }
-
 }

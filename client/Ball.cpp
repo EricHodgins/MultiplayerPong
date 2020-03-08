@@ -11,7 +11,7 @@ Ball::Ball(Renderer &renderer, LTexture &ballTexture) : mRenderer(renderer), mBa
     mVelY = BALL_VEL;
 }
 
-void Ball::move(SDL_Rect &wall, Uint32 deltaTime) {
+void Ball::move(const SDL_Rect &wall, Uint32 deltaTime) {
     //Move the dot left or right
     mPosX += mVelX * ((float)deltaTime / 1000.0);
 	mCollider.x = mPosX;

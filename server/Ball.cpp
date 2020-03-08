@@ -14,23 +14,25 @@ Ball::Ball(Renderer &renderer, LTexture &ballTexture,
     mVelY = BALL_VEL;
 }
 
-void Ball::move(SDL_Rect &wall, Uint32 deltaTime) {
+void Ball::move(Paddle &paddle, Uint32 deltaTime) {
+    SDL_Rect paddleBody = paddle.GetBody();
+
     //Move the dot left or right
     mPosX += mVelX * ((float)deltaTime / 1000.0);
 	mCollider.x = mPosX;
 
-    //If the dot collided or went too far to the left or right
-    if( ( mPosX < 0 ) || ( mPosX + BALL_WIDTH > mRenderer.getScreenWidth()) || checkCollision( mCollider, wall ) )
+    //If the Ball collided or went too far to the left or right
+    if( ( mPosX < 0 ) || ( mPosX + BALL_WIDTH > mRenderer.getScreenWidth()) || checkCollision( mCollider, paddleBody ) )
     {
         mVelX = -mVelX;
     }
 
-    //Move the dot up or down
+    //Move the Ball up or down
     mPosY += mVelY * ((float)deltaTime / 1000.0);
 	mCollider.y = mPosY;
 
-    //If the dot collided or went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + BALL_HEIGHT > mRenderer.getScreenHeight()) || checkCollision( mCollider, wall ) )
+    //If the Ball collided or went too far up or down
+    if( ( mPosY < 0 ) || ( mPosY + BALL_HEIGHT > mRenderer.getScreenHeight()) || checkCollision( mCollider, paddleBody) )
     {
         mVelY = -mVelY;
     }
@@ -100,8 +102,6 @@ char* Ball::SerializeOut() {
 
 void Ball::sendStateToClients() {
 
-    std::cout << mServer.GetSocket()->GetSocketHandle() << std::endl;
-
     std::string x = std::to_string(mPosX); 
     char *ballData = SerializeOut();
     int dataSize = sizeof(char) + sizeof(float)*4;
@@ -113,7 +113,10 @@ void Ball::sendStateToClients() {
            (struct sockaddr*)&mServer.getPlayer2()->address,
            sizeof(mServer.getPlayer2()->address));
 
-    std::cout << "Bytes to Player 1: " << bytes_sent1 << std::endl;
-    std::cout << "Bytes to Player 2: " << bytes_sent2 << std::endl;
+    //std::cout << "Bytes to Player 1: " << bytes_sent1 << std::endl;
+    //std::cout << "Bytes to Player 2: " << bytes_sent2 << std::endl;
+    if (bytes_sent1 < 0 || bytes_sent2 < 0) {
+        std::cout << "Ball:sendStateToClients failed." << std::endl;
+    }
 
 }

@@ -11,15 +11,16 @@ int main(int argc, char *argv[]) {
     UDPServer udp_server(socket);
     udp_server.WaitForPlayerConnections();
 
-    //std::thread network_thread = std::thread(&UDPServer::GetClientPaddleUpdates, udp_server);
     std::cout << "Simulating Game..." << std::endl;
 
     Renderer renderer = Renderer(640, 480);
     renderer.setWindowTitle("Multiplayer Pong (SERVER)");
 
+    /*
     LTexture ballTexture(renderer);
     ballTexture.loadFromFile("../shared/dot.bmp");
     Ball ball(renderer, ballTexture, udp_server);
+    */
 
     std::future<void> fut = std::async(std::launch::async, &UDPServer::GetClientPaddleUpdates, &udp_server);
 

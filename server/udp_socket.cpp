@@ -35,6 +35,7 @@ void UDPSocket::Bind() {
 }
 
 void UDPSocket::Receive() {
+    /*
     std::cout << "Receiving. Socket ready to be read." << std::endl;
 
     struct sockaddr_storage client_address;
@@ -53,6 +54,7 @@ void UDPSocket::Receive() {
     }
 
     std::cout << std::endl;
+    */
 }
 
 struct addrinfo* UDPSocket::GetAddressInfo() {

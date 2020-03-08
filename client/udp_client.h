@@ -17,6 +17,7 @@ class UDPClient {
         void SendRDYToServer();
         void SendPaddlePositionToServer();
         void GetUpdates();
+        std::string GetRDYResponse();
         void SetBall(Ball *ball);
         void GetObjectFlag();
         void UpdateBall(char *ballData);

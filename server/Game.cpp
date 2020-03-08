@@ -1,6 +1,7 @@
 #include <iostream>
 #include <thread>
 #include "Game.h"
+#include "Paddle.h"
 #include "../shared/LTexture.h"
 #include "Ball.h"
 #include "udp_socket.h"
@@ -23,12 +24,11 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
     ballTexture.loadFromFile("../shared/dot.bmp");
 
     Ball ball(renderer, ballTexture, server);
-
-    SDL_Rect paddle;
-    paddle.x = 30;
-    paddle.y = 100;
-    paddle.w = 15;
-    paddle.h = 120;
+    Paddle paddle1(renderer, server.getPlayer1()->name, server);
+    Paddle paddle2(renderer, server.getPlayer2()->name, server);
+    
+    server.SetPaddle1(&paddle1);
+    server.SetPaddle2(&paddle2);
 
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
@@ -42,7 +42,7 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
 
         if (deltaTime >= 1) {
             // Move Ball and check collision
-            ball.move(paddle, deltaTime);
+            ball.move(paddle1, deltaTime);
             last_update_time = current_time;
             ball.sendStateToClients();
         }
@@ -54,9 +54,9 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
         // Render Ball
         ball.render();
 
-        // Render Paddle 1
-        SDL_SetRenderDrawColor(renderer.getRenderer(), 0x00, 0x00, 0x00, 0xFF);
-        SDL_RenderFillRect(renderer.getRenderer(), &paddle);
+        // Render Paddles
+        paddle1.Render();
+        paddle2.Render();
 
         // Update Screen
         SDL_RenderPresent(renderer.getRenderer());
@@ -74,5 +74,4 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
         current_time = SDL_GetTicks();
     }
     
-    //t1.join();
 }

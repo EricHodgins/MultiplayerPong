@@ -6,6 +6,9 @@
 #include <thread>
 #include "../shared/cplatform.h"
 #include "udp_socket.h"
+#include "Paddle.h"
+
+class Paddle;
 
 struct Player {
     struct sockaddr_storage address;
@@ -21,11 +24,13 @@ class UDPServer {
         void GetClientPaddleUpdates();
         Player* getPlayer1() { return player1; }
         Player* getPlayer2() { return player2; }
+        void SetPaddle1(Paddle *paddle);
+        void SetPaddle2(Paddle *paddle);
         
-        void TmpTest();
     private:
         std::shared_ptr<UDPSocket> udp_socket;
-        Player *player1, *player2;        
+        Player *player1, *player2;
+        Paddle *mPaddle1, *mPaddle2;
 };
 
 #endif
