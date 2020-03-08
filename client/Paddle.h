@@ -6,6 +6,8 @@
 #include "../shared/Renderer.h"
 #include <string>
 
+class UDPClient;
+
 enum Direction {
     UP, DOWN 
 };
@@ -18,9 +20,11 @@ class Paddle {
         static constexpr float PADDLE_VEL = 20.0f;
 
         Paddle(Renderer &renderer, const std::string pFlag, UDPClient &client);
+        bool isFirstPlayer();
         const SDL_Rect GetBody();
         void Move(const Direction direction);
         void Render();
+        void Update(int posY);
 
     private:
         void SendStateToServer();

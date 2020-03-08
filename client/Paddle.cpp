@@ -14,6 +14,10 @@ Paddle::Paddle(Renderer &renderer, const std::string pFlag, UDPClient &client): 
     mBody.h = PADDLE_HEIGHT;
 }
 
+bool Paddle::isFirstPlayer() {
+    return mFlag == '1';
+}
+
 void Paddle::Move(const Direction direction) {
     if (direction == UP) {
         mBody.y -= PADDLE_VEL;
@@ -26,6 +30,10 @@ void Paddle::Move(const Direction direction) {
 
 const SDL_Rect Paddle::GetBody() {
     return mBody;
+}
+
+void Paddle::Update(int posY) {
+    mBody.y = posY;
 }
 
 void Paddle::Render() {

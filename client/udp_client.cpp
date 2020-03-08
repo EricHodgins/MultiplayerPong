@@ -15,6 +15,10 @@ void UDPClient::SetBall(Ball *ball) {
     mBall = ball;    
 }
 
+void UDPClient::SetPaddle(Paddle *paddle) {
+    mPaddle = paddle;
+}
+
 void UDPClient::UpdateBall(char *ballData) {
     float posX = *(float*)(ballData + sizeof(char));
     float posY = *(float*)(ballData + sizeof(char) + sizeof(float));
@@ -23,6 +27,12 @@ void UDPClient::UpdateBall(char *ballData) {
     
     //std::cout << "posX: " << posX << ", " << posY << ", " << velX << ", " << velY << std::endl;
     mBall->Update(posX, posY, velX, velY);
+}
+
+void UDPClient::UpdatePaddle(char *paddleData) {
+    int posY = *(int*)(paddleData + sizeof(char));
+    std::cout << "Paddle data received, posY: " << posY << std::endl;
+    mPaddle->Update(posY);
 }
 
 std::string UDPClient::GetRDYResponse() {
@@ -72,8 +82,8 @@ void UDPClient::GetUpdates() {
             char object_flag = readIn[0];
             if (object_flag == 'B') {
                 UpdateBall(readIn);                 
-            } else if (object_flag == 'P') {
-                std::cout << "Paddle data received" << std::endl;
+            } else if (object_flag == '1' || object_flag == '2') {
+                UpdatePaddle(readIn);
             }
         }
     }

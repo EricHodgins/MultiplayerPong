@@ -21,7 +21,18 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
     Ball ball(renderer, ballTexture);
     udp_client.SetBall(&ball);
     
+    // Controlled by Player
     Paddle paddle(renderer, playerName, udp_client);
+    // Updated From Server (opposition)
+    std::string p2Name;
+    if (paddle.isFirstPlayer()) {
+        p2Name = "P2";
+    } else {
+        p2Name = "P1";
+    }
+    Paddle paddle2(renderer, p2Name, udp_client);
+    udp_client.SetPaddle(&paddle2);
+
     Controller controller;
     while (!quit) {
         controller.HandleInput(quit, paddle);
@@ -44,6 +55,7 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
 
         // Render Paddles 
         paddle.Render();
+        paddle2.Render();
 
         // Update Screen
         SDL_RenderPresent(renderer.getRenderer());
