@@ -6,7 +6,7 @@ Paddle::Paddle(Renderer &renderer, std::string pFlag, UDPServer &server): mRende
         mFlag = '1';
         mPaddleClient = server.getPlayer2();
     } else {
-        mBody.x = 620;
+        mBody.x = renderer.getScreenWidth() - 30 - PADDLE_WIDTH;
         mFlag = '2';
         mPaddleClient = server.getPlayer1();
     }

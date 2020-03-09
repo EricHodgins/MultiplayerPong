@@ -16,17 +16,12 @@ int main(int argc, char *argv[]) {
     Renderer renderer = Renderer(640, 480);
     renderer.setWindowTitle("Multiplayer Pong (SERVER)");
 
-    /*
-    LTexture ballTexture(renderer);
-    ballTexture.loadFromFile("../shared/dot.bmp");
-    Ball ball(renderer, ballTexture, udp_server);
-    */
-
     std::future<void> fut = std::async(std::launch::async, &UDPServer::GetClientPaddleUpdates, &udp_server);
 
     Game game;
+    udp_server.SetGame(&game);
     game.Update(renderer, udp_server);
-    
+
     fut.get(); 
     return 0;
 }

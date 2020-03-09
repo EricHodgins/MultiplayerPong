@@ -13,8 +13,6 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
     Uint32 last_update_time = 0;
     Uint32 deltaTime = current_time - last_update_time;
 
-    bool quit = false;
-        
     LTexture ballTexture(renderer);
     ballTexture.loadFromFile("../shared/dot.bmp");
 
@@ -34,8 +32,8 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
     udp_client.SetPaddle(&paddle2);
 
     Controller controller;
-    while (!quit) {
-        controller.HandleInput(quit, paddle);
+    while (!mQuit) {
+        controller.HandleInput(paddle, udp_client);
 
         frame_start = SDL_GetTicks();
         deltaTime = current_time - last_update_time;
@@ -57,16 +55,19 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
         paddle.Render();
         paddle2.Render();
 
+        // Render Middle Line (Dotted)
+        SDL_SetRenderDrawColor(renderer.getRenderer(), 0x00, 0x00, 0x00, 0x00);
+        for (int i = 0; i < renderer.getScreenHeight(); i += 40) {
+            SDL_Rect fillRect = { renderer.getScreenWidth() / 2 - 5, i, 10, 20 };
+            SDL_RenderFillRect(renderer.getRenderer(), &fillRect);
+        }
+
         // Update Screen
         SDL_RenderPresent(renderer.getRenderer());
 
         frame_end = SDL_GetTicks();
         frame_count++;
         frame_duration = frame_end - frame_start;
-        
-        if (frame_duration < target_frame_duration) {
-            //SDL_Delay(target_frame_duration - frame_duration);
-        }
         
         // Take a load off the CPU with a 1ms delay
         SDL_Delay(1);

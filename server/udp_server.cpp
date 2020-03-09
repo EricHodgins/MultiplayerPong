@@ -66,6 +66,10 @@ void UDPServer::WaitForPlayerConnections() {
     std::cout << "Players Connected (2). " << std::endl;        
 }
 
+void UDPServer::SetGame(Game *game) {
+    mGame = game;
+}
+
 void UDPServer::SetPaddle1(Paddle *paddle) {
     mPaddle1 = paddle;
 }
@@ -97,6 +101,9 @@ void UDPServer::GetClientPaddleUpdates() {
                 mPaddle1->Update(readIn);
             } else if (readIn[0] == '2') {
                 mPaddle2->Update(readIn);
+            } else if (readIn[0] == 'Q') {
+                mGame->Quit();
+                break;
             }
         }
     }

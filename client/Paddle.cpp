@@ -5,7 +5,7 @@ Paddle::Paddle(Renderer &renderer, const std::string pFlag, UDPClient &client): 
         mBody.x = 30;
         mFlag = '1';
     } else {
-        mBody.x = 620;
+        mBody.x = renderer.getScreenWidth() - 30 - PADDLE_WIDTH;
         mFlag = '2';
     }
 

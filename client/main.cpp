@@ -12,14 +12,18 @@ int main(int argc, char *argv[]) {
     std::string playerName = srvResp.get(); 
     std::cout << "Player Name: " << playerName << std::endl;
 
-    std::thread network_thread = std::thread(&UDPClient::GetUpdates, &udp_client);
+    //std::thread network_thread = std::thread(&UDPClient::GetUpdates, &udp_client);
+    std::future<void> network_thread = std::async(std::launch::async, &UDPClient::GetUpdates, &udp_client);
 
     Renderer renderer = Renderer(640, 480);
-    renderer.setWindowTitle("Multiplayer Pong (CLIENT)");
+    std::string windowTitle = "Multiplayer Pong (CLIENT): " + playerName;
+    renderer.setWindowTitle(windowTitle);
     Game game;
+    udp_client.SetGame(&game);
     game.Update(renderer, udp_client, playerName);
 
-    network_thread.join();
+    //network_thread.join();
+    network_thread.get();
 
     return 0;
 }

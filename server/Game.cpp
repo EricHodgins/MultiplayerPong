@@ -16,9 +16,6 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
     Uint32 current_time = SDL_GetTicks();
     Uint32 last_update_time = 0;
     Uint32 deltaTime = current_time - last_update_time;
-
-    bool quit = false;
-    SDL_Event e;
         
     LTexture ballTexture(renderer);
     ballTexture.loadFromFile("../shared/dot.bmp");
@@ -30,19 +27,14 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
     server.SetPaddle1(&paddle1);
     server.SetPaddle2(&paddle2);
 
-    while (!quit) {
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-            }
-        }
+    while (!mQuit) {
         
         frame_start = SDL_GetTicks();
         deltaTime = current_time - last_update_time;
 
         if (deltaTime >= 1) {
             // Move Ball and check collision
-            ball.move(paddle1, deltaTime);
+            ball.move(paddle1, paddle2, deltaTime);
             last_update_time = current_time;
             ball.sendStateToClients();
         }
@@ -58,6 +50,13 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
         paddle1.Render();
         paddle2.Render();
 
+        // Render Middle Line (Dotted)
+        SDL_SetRenderDrawColor(renderer.getRenderer(), 0x00, 0x00, 0x00, 0x00);
+        for (int i = 0; i < renderer.getScreenHeight(); i += 40) {
+            SDL_Rect fillRect = { renderer.getScreenWidth() / 2 - 5, i, 10, 20 };
+            SDL_RenderFillRect(renderer.getRenderer(), &fillRect);
+        }
+
         // Update Screen
         SDL_RenderPresent(renderer.getRenderer());
 
@@ -65,13 +64,31 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
         frame_count++;
         frame_duration = frame_end - frame_start;
         
-        if (frame_duration < target_frame_duration) {
-            //SDL_Delay(target_frame_duration - frame_duration);
-        }
-        
         // Take a load off the CPU with a 1ms delay
         SDL_Delay(1);
         current_time = SDL_GetTicks();
     }
+
+    NotifyClientsGameEnded(server);
+    SDL_Delay(1000);
+}
+
+void Game::NotifyClientsGameEnded(UDPServer &server) {
+    char quitFlag = 'Q';
+    int dataSize = sizeof(char);
     
+    int bytes_sent1 = sendto(server.GetSocket()->GetSocketHandle(), &quitFlag, dataSize, 0,
+                            (struct sockaddr*)&server.getPlayer1()->address,
+                            sizeof(server.getPlayer1()->address));
+
+    int bytes_sent2 = sendto(server.GetSocket()->GetSocketHandle(), &quitFlag, dataSize, 0,
+                            (struct sockaddr*)&server.getPlayer2()->address,
+                            sizeof(server.getPlayer2()->address));
+
+    if (bytes_sent1 < 0 || bytes_sent2 < 0) {
+        std::cout << "Game::NotifyClientsGameEnded failed." << std::endl;
+    }
+
+    std::cout << "Quit: " << bytes_sent1 << ", " << bytes_sent2 << std::endl;
+
 }

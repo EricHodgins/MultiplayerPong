@@ -14,15 +14,17 @@ Ball::Ball(Renderer &renderer, LTexture &ballTexture,
     mVelY = BALL_VEL;
 }
 
-void Ball::move(Paddle &paddle, Uint32 deltaTime) {
+void Ball::move(Paddle &paddle, Paddle &paddle2, Uint32 deltaTime) {
     SDL_Rect paddleBody = paddle.GetBody();
+    SDL_Rect paddleBody2 = paddle2.GetBody();
 
-    //Move the dot left or right
+    //Move the ball left or right
     mPosX += mVelX * ((float)deltaTime / 1000.0);
 	mCollider.x = mPosX;
 
     //If the Ball collided or went too far to the left or right
-    if( ( mPosX < 0 ) || ( mPosX + BALL_WIDTH > mRenderer.getScreenWidth()) || checkCollision( mCollider, paddleBody ) )
+    if( ( mPosX < 0 ) || ( mPosX + BALL_WIDTH > mRenderer.getScreenWidth()) || 
+          checkCollision( mCollider, paddleBody ) || checkCollision(mCollider, paddleBody2))
     {
         mVelX = -mVelX;
     }
@@ -32,7 +34,8 @@ void Ball::move(Paddle &paddle, Uint32 deltaTime) {
 	mCollider.y = mPosY;
 
     //If the Ball collided or went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + BALL_HEIGHT > mRenderer.getScreenHeight()) || checkCollision( mCollider, paddleBody) )
+    if( ( mPosY < 0 ) || ( mPosY + BALL_HEIGHT > mRenderer.getScreenHeight()) || 
+          checkCollision( mCollider, paddleBody) || checkCollision(mCollider, paddleBody2))
     {
         mVelY = -mVelY;
     }

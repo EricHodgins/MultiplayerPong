@@ -19,6 +19,10 @@ void UDPClient::SetPaddle(Paddle *paddle) {
     mPaddle = paddle;
 }
 
+void UDPClient::SetGame(Game *game) {
+    mGame = game;
+}
+
 void UDPClient::UpdateBall(char *ballData) {
     float posX = *(float*)(ballData + sizeof(char));
     float posY = *(float*)(ballData + sizeof(char) + sizeof(float));
@@ -76,7 +80,7 @@ void UDPClient::GetUpdates() {
         if (select(max_socket+1, &reads, 0, 0, 0) < 0) {
             std::cerr << "select() failed. " << GETSOCKETERRNO() << std::endl;
         }
-        // Ball Update from server
+        // Ball, Paddle, Quit Updates from server
         if (FD_ISSET(udp_socket->GetSocketHandle(), &reads)) {
             recv(udp_socket->GetSocketHandle(), readIn, maxPacketSize, 0);
             char object_flag = readIn[0];
@@ -84,6 +88,10 @@ void UDPClient::GetUpdates() {
                 UpdateBall(readIn);                 
             } else if (object_flag == '1' || object_flag == '2') {
                 UpdatePaddle(readIn);
+            } else if (readIn[0] == 'Q') {
+                std::cout << "Quit received from server..." << std::endl;
+                mGame->Quit();
+                break;
             }
         }
     }

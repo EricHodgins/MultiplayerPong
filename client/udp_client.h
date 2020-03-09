@@ -6,11 +6,13 @@
 #include <thread>
 #include "Ball.h"
 #include "Paddle.h"
+#include "Game.h"
 #include "udp_socket.h"
 #include "../shared/cplatform.h"
 
 class Ball;
 class Paddle;
+class Game;
 
 class UDPClient {
     
@@ -22,6 +24,7 @@ class UDPClient {
         std::string GetRDYResponse();
         void SetBall(Ball *ball);
         void SetPaddle(Paddle *paddle);
+        void SetGame(Game *game);
         void GetObjectFlag();
         void UpdateBall(char *ballData);
         void UpdatePaddle(char *paddleData);
@@ -31,6 +34,7 @@ class UDPClient {
         std::shared_ptr<UDPSocket> udp_socket;
         Ball *mBall;
         Paddle *mPaddle;
+        Game *mGame;
 };
 
 #endif

@@ -14,7 +14,7 @@ public:
     static constexpr float BALL_VEL = 100.0f;
     
     Ball(Renderer &renderer, LTexture &ballTexture, UDPServer &server);
-    void move(Paddle &paddle, Uint32 deltaTime);
+    void move(Paddle &paddle, Paddle &paddle2, Uint32 deltaTime);
     void render();
     void sendStateToClients();
     char* SerializeOut();
