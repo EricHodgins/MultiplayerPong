@@ -5,9 +5,9 @@
 #include "../shared/LTexture.h"
 #include "Ball.h"
 #include "udp_socket.h"
+#include "HUD.h"
 
 void Game::Update(Renderer &renderer, UDPServer &server) {
-    std::size_t target_frame_duration = 60;
     Uint32 frame_start = 0;
     Uint32 frame_end = 0;
     Uint32 frame_duration = 0;
@@ -27,6 +27,8 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
     server.SetPaddle1(&paddle1);
     server.SetPaddle2(&paddle2);
 
+    HUD hud(renderer);
+
     while (!mQuit) {
         
         frame_start = SDL_GetTicks();
@@ -37,6 +39,10 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
             ball.move(paddle1, paddle2, deltaTime);
             last_update_time = current_time;
             ball.sendStateToClients();
+            if (ball.HasScored(paddle1, paddle2)) {
+                std::cout << "Score!" << std::endl;
+                hud.SendScoreToClients(paddle1, paddle2, server);
+            }
         }
  
         // Clear Screen
@@ -57,7 +63,10 @@ void Game::Update(Renderer &renderer, UDPServer &server) {
             SDL_RenderFillRect(renderer.getRenderer(), &fillRect);
         }
 
-        // Update Screen
+        // Render Scores (HUD)
+        hud.RenderScore(paddle1, paddle2);
+
+        // Update Screen        
         SDL_RenderPresent(renderer.getRenderer());
 
         frame_end = SDL_GetTicks();

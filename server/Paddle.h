@@ -26,6 +26,8 @@ class Paddle {
         void Update(char *dataIn);
         void Move(const Direction direction);
         void Render();
+        int GetScore() const { return mScore; }
+        void HasScored() { mScore++; }
 
     private:
         void SendStateToClient(char *dataOut);
@@ -35,6 +37,7 @@ class Paddle {
         Renderer &mRenderer;
         UDPServer &mServer;
         Player *mPaddleClient;
+        int mScore;
 };
 
 

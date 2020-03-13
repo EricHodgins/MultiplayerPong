@@ -36,7 +36,12 @@ Renderer::Renderer(int screenWidth, int screenHeight) {
     int imgFlags = IMG_INIT_PNG;
     if (!(IMG_Init(imgFlags) & imgFlags)) {
         std::cerr << "SDL_image could not be initialized. " << IMG_GetError() << std::endl;
-    }    
+    }
+
+    // Initialize SDL_ttf
+    if (TTF_Init() == -1) {
+        std::cerr << "SDL_ttf failed to initialize: " << TTF_GetError() << std::endl;
+    }
 }
 
 void Renderer::setWindowTitle(std::string newTitle) {
@@ -52,7 +57,8 @@ Renderer::~Renderer() {
     SDL_DestroyWindow(window);
     window = NULL;
     renderer = NULL;
-
-    IMG_Quit();
+    
+    TTF_Quit();
+    IMG_Quit();    
     SDL_Quit();
 }

@@ -18,6 +18,7 @@ public:
     void render();
     void sendStateToClients();
     char* SerializeOut();
+    bool HasScored(Paddle &paddle1, Paddle &paddle2);
 
 private:
     float mPosX, mPosY;

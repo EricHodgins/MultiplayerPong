@@ -25,6 +25,8 @@ class Paddle {
         void Move(const Direction direction);
         void Render();
         void Update(int posY);
+        void SetScore(int newScore) { mScore = newScore; }
+        int GetScore() { return mScore; }
 
     private:
         void SendStateToServer();
@@ -33,7 +35,8 @@ class Paddle {
         SDL_Rect mBody;
         Renderer &mRenderer;
         UDPClient &mClient;
-        float mPosX, mPosY;        
+        float mPosX, mPosY;
+        int mScore;
 };
 
 

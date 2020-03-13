@@ -92,6 +92,8 @@ void UDPClient::GetUpdates() {
                 std::cout << "Quit received from server..." << std::endl;
                 mGame->Quit();
                 break;
+            } else if (readIn[0] == 'S') {
+                mGame->UpdateHUD(readIn);
             }
         }
     }

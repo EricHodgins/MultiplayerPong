@@ -14,6 +14,24 @@ Ball::Ball(Renderer &renderer, LTexture &ballTexture,
     mVelY = BALL_VEL;
 }
 
+bool Ball::HasScored(Paddle &paddle1, Paddle &paddle2) {
+    if (mPosX < paddle1.GetBody().x) {
+        paddle2.HasScored();
+        mPosX = mRenderer.getScreenWidth() / 2;
+        mPosY = mRenderer.getScreenHeight() / 2;
+        return true;
+    }
+
+    if (mPosX > paddle2.GetBody().x + paddle2.GetBody().w) {
+        paddle1.HasScored();
+        mPosX = mRenderer.getScreenWidth() / 2;
+        mPosY = mRenderer.getScreenHeight() / 2;
+        return true;
+    }
+
+    return false;
+}
+
 void Ball::move(Paddle &paddle, Paddle &paddle2, Uint32 deltaTime) {
     SDL_Rect paddleBody = paddle.GetBody();
     SDL_Rect paddleBody2 = paddle2.GetBody();
@@ -116,8 +134,6 @@ void Ball::sendStateToClients() {
            (struct sockaddr*)&mServer.getPlayer2()->address,
            sizeof(mServer.getPlayer2()->address));
 
-    //std::cout << "Bytes to Player 1: " << bytes_sent1 << std::endl;
-    //std::cout << "Bytes to Player 2: " << bytes_sent2 << std::endl;
     if (bytes_sent1 < 0 || bytes_sent2 < 0) {
         std::cout << "Ball:sendStateToClients failed." << std::endl;
     }

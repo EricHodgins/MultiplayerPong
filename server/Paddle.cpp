@@ -14,6 +14,7 @@ Paddle::Paddle(Renderer &renderer, std::string pFlag, UDPServer &server): mRende
     mBody.y = 100;
     mBody.w = PADDLE_WIDTH;
     mBody.h = PADDLE_HEIGHT;
+    mScore = 0;
 }
 
 void Paddle::Move(const Direction direction) {

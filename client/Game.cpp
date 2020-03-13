@@ -2,8 +2,6 @@
 #include "controller.h"
 
 void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string playerName) {
-    std::size_t target_frame_duration = 60;
-    Uint32 title_timestamp = SDL_GetTicks();
     Uint32 frame_start = 0;
     Uint32 frame_end = 0;
     Uint32 frame_duration = 0;
@@ -21,6 +19,7 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
     
     // Controlled by Player
     Paddle paddle(renderer, playerName, udp_client);
+    mPaddle1 = &paddle;
     // Updated From Server (opposition)
     std::string p2Name;
     if (paddle.isFirstPlayer()) {
@@ -29,9 +28,12 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
         p2Name = "P1";
     }
     Paddle paddle2(renderer, p2Name, udp_client);
+    mPaddle2 = &paddle2;
     udp_client.SetPaddle(&paddle2);
 
     Controller controller;
+    HUD hud(renderer);
+
     while (!mQuit) {
         controller.HandleInput(paddle, udp_client);
 
@@ -62,6 +64,9 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
             SDL_RenderFillRect(renderer.getRenderer(), &fillRect);
         }
 
+        // Render Scores
+        hud.RenderScore(paddle, paddle2);
+
         // Update Screen
         SDL_RenderPresent(renderer.getRenderer());
 
@@ -74,4 +79,15 @@ void Game::Update(Renderer &renderer, UDPClient &udp_client, const std::string p
         current_time = SDL_GetTicks();
     }
 
+}
+
+void Game::UpdateHUD(char *dataIn) {
+    // P1 = Player 1, P2 = Player 2
+    int p1Point = *(int*)(dataIn + sizeof(char));
+    int p2Point = *(int*)(dataIn + sizeof(char) + sizeof(int));
+
+    std::cout << "P1 score is now: " << p1Point << std::endl;
+    mPaddle1->SetScore(p1Point);
+    std::cout << "P2 score is now: " << p2Point << std::endl;
+    mPaddle2->SetScore(p2Point);    
 }

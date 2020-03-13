@@ -12,6 +12,7 @@ Paddle::Paddle(Renderer &renderer, const std::string pFlag, UDPClient &client): 
     mBody.y = 100;
     mBody.w = PADDLE_WIDTH;
     mBody.h = PADDLE_HEIGHT;
+    mScore = 0;
 }
 
 bool Paddle::isFirstPlayer() {
