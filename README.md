@@ -24,3 +24,5 @@ There is a Makefile in each.
 4. ./multiplayerpong (terminal 2)
 5. ./multiplayerpong (terminal 3)
 ```
+
+![PONG](/pong-action.png)
