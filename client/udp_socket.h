@@ -11,7 +11,6 @@ class UDPSocket {
         // Configure socket at init
         UDPSocket(std::string address, std::string port);
         ~UDPSocket();
-        void Receive();
         SOCKET GetSocketHandle() { return mSocket; }
         struct addrinfo* GetAddressInfo();
 
